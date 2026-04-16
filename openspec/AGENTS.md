@@ -21,7 +21,19 @@ When implementing any feature:
 3. If coverage drops below 95%, ADD MORE TESTS
 4. Do NOT reduce coverage threshold
 
-### 2. CI Must Pass
+### 2. Lint After Each Implementation
+
+**Run linting AFTER every implementation alongside test coverage.**
+
+After completing any implementation (feature, fix, refactor):
+1. Run `ruff check src/ --fix` to fix lint issues
+2. Run `ruff format src/` to format code
+3. Run tests: `pytest tests/ --cov=src/agento --cov-fail-under=95`
+4. Verify coverage >= 95%
+
+Do NOT skip linting - fix issues before committing.
+
+### 3. CI Must Pass
 
 All checks must pass before any merge:
 - `pytest tests/ --cov=src/agento --cov-fail-under=95`
@@ -29,7 +41,7 @@ All checks must pass before any merge:
 - `mypy src/`
 - `black --check src/`
 
-### 3. No Placeholder Code in Production
+### 4. No Placeholder Code in Production
 
 - Do NOT commit empty modules as placeholders
 - Implement or remove - no stubs
