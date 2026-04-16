@@ -4,6 +4,37 @@
 
 Agento is a CLI/TUI AI agent for code generation and DevOps automation, built with layered architecture and SOLID principles.
 
+## MANDATORY RULES (Non-Negotiable)
+
+### 1. Test Coverage: 95% Minimum
+
+**THIS IS NOT OPTIONAL. ALL CODE MUST HAVE 95%+ COVERAGE.**
+
+```
+Configuration: pyproject.toml [tool.coverage.fail-under] min = 95
+CI Gate: pytest --cov-fail-under=95
+```
+
+When implementing any feature:
+1. Write unit tests FIRST
+2. Run tests: `pytest --cov=src/agento --cov-fail-under=95`
+3. If coverage drops below 95%, ADD MORE TESTS
+4. Do NOT reduce coverage threshold
+
+### 2. CI Must Pass
+
+All checks must pass before any merge:
+- `pytest tests/ --cov=src/agento --cov-fail-under=95`
+- `ruff check src/`
+- `mypy src/`
+- `black --check src/`
+
+### 3. No Placeholder Code in Production
+
+- Do NOT commit empty modules as placeholders
+- Implement or remove - no stubs
+- Exception: explicit `TODO` comments with issue reference
+
 ## Architecture
 
 ```
@@ -14,7 +45,7 @@ src/agento/
 │   ├── entities/         # Task, Plan, Memory, Spec
 │   ├── services/         # Planning, Execution, Reflection
 │   └── ports/            # Interfaces (LLM, Memory, Tools)
-├── infrastructure/        # INFRASTRUCTURE LAYER - External adapters
+├── infrastructure/       # INFRASTRUCTURE LAYER - External adapters
 │   ├── llm/             # OpenRouter, DeepSeek, Gemini
 │   ├── memory/           # FAISS, Conversation store
 │   ├── tools/            # File, Bash, Git, Docker, Search
@@ -58,7 +89,7 @@ src/agento/
 
 - Type hints on ALL functions
 - Docstrings on public APIs
-- Unit tests for all new features (95%+ coverage)
+- **Unit tests for ALL new features with 95%+ coverage**
 - Linting with ruff, formatting with black
 - Pydantic for data validation
 
@@ -66,8 +97,8 @@ src/agento/
 
 - Conventional commits (feat:, fix:, docs:, test:, refactor:)
 - One feature per commit
-- Tests pass before commit
-- 95%+ code coverage required
+- **Tests pass AND coverage >= 95% before commit**
+- **95%+ code coverage is MANDATORY - not optional**
 
 ## Model Configuration
 

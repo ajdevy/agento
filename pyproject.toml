@@ -151,7 +151,7 @@ exclude_lines = [
 ]
 
 [tool.coverage.fail-under]
-min = 75
+min = 95
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
