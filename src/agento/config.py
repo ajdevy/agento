@@ -103,11 +103,13 @@ class Settings(BaseSettings):
     @property
     def has_api_key(self) -> bool:
         """Check if any API key is configured."""
-        return any([
-            self.openrouter_api_key and self.openrouter_api_key.get_secret_value(),
-            self.deepseek_api_key and self.deepseek_api_key.get_secret_value(),
-            self.google_api_key and self.google_api_key.get_secret_value(),
-        ])
+        return any(
+            [
+                self.openrouter_api_key and self.openrouter_api_key.get_secret_value(),
+                self.deepseek_api_key and self.deepseek_api_key.get_secret_value(),
+                self.google_api_key and self.google_api_key.get_secret_value(),
+            ]
+        )
 
 
 settings = Settings()
