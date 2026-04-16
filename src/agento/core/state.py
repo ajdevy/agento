@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
@@ -43,7 +43,7 @@ class AgentState(BaseModel):
         description="Current agent mode",
     )
 
-    current_plan: list[dict] = Field(
+    current_plan: list[dict[str, Any]] = Field(
         default_factory=list,
         description="Current execution plan",
     )

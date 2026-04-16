@@ -6,4 +6,4 @@ __license__ = "MIT"
 
 from agento.config import settings
 
-__all__ = ["settings", "__version__"]
+__all__ = ["__version__", "settings"]

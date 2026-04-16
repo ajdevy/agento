@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
 from langgraph.graph import StateGraph
 
 from agento.core.state import AgentState
 
 
-def create_agent_graph() -> StateGraph:
+def create_agent_graph() -> StateGraph:  # type: ignore[type-arg]
     """Create the main agent graph."""
     graph = StateGraph(AgentState)
 
@@ -52,10 +52,10 @@ def create_agent_graph() -> StateGraph:
         },
     )
 
-    return graph.compile()
+    return graph.compile()  # type: ignore[return-value]
 
 
-def router_node(state: AgentState) -> dict:
+def router_node(state: AgentState) -> dict[str, Any]:
     """Route to appropriate handler based on mode."""
     if not state.messages:
         return {"current_mode": "idle"}
@@ -64,22 +64,22 @@ def router_node(state: AgentState) -> dict:
     return {"current_mode": last_message.role}
 
 
-def chat_node(state: AgentState) -> dict:
+def chat_node(state: AgentState) -> dict[str, Any]:
     """Handle chat messages."""
     return {"current_mode": "chat"}
 
 
-def planner_node(state: AgentState) -> dict:
+def planner_node(state: AgentState) -> dict[str, Any]:
     """Create execution plan."""
     return {"current_plan": []}
 
 
-def executor_node(state: AgentState) -> dict:
+def executor_node(state: AgentState) -> dict[str, Any]:
     """Execute current plan."""
     return {}
 
 
-def reflector_node(state: AgentState) -> dict:
+def reflector_node(state: AgentState) -> dict[str, Any]:
     """Reflect on execution results."""
     return {}
 

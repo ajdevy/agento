@@ -6,7 +6,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from agento.infrastructure.llm.base import MODEL_COSTS, LLMCost
+from agento.infrastructure.llm.base import MODEL_COSTS
 
 
 class ModelRoutingConfig(BaseModel):

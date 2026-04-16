@@ -4,11 +4,11 @@ from agento.domain.entities import Memory, Plan, Spec, Task
 from agento.domain.ports import LLMPort, MemoryPort, ToolPort
 
 __all__ = [
+    "LLMPort",
     "Memory",
+    "MemoryPort",
     "Plan",
     "Spec",
     "Task",
-    "LLMPort",
-    "MemoryPort",
     "ToolPort",
 ]

@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+import asyncio
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any
-import asyncio
 
 
 @dataclass
@@ -62,7 +62,7 @@ class UsageTracker:
 class RateLimiter:
     """Rate limiter for LLM API calls."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._trackers: dict[str, UsageTracker] = {}
         self._limits: dict[str, RateLimit] = {}
         self._initialize_limits()
@@ -73,12 +73,6 @@ class RateLimiter:
         free_limit = RateLimit(
             requests_per_minute=20,
             requests_per_day=200,
-        )
-
-        # Paid models (higher limits)
-        paid_limit = RateLimit(
-            requests_per_minute=100,
-            requests_per_day=10_000,
         )
 
         # Set default limits
@@ -110,7 +104,7 @@ class RateLimiter:
         tracker = self._get_tracker(model)
         limit = self._get_limit(model)
 
-        can_proceed, reason = tracker.can_make_request(limit)
+        can_proceed, _ = tracker.can_make_request(limit)
 
         if can_proceed:
             tracker.record_request(tokens)
@@ -125,7 +119,7 @@ class RateLimiter:
             await asyncio.sleep(5)  # Wait 5 seconds
 
             tracker = self._get_tracker(model)
-            can_proceed, reason = tracker.can_make_request(limit)
+            can_proceed, _ = tracker.can_make_request(limit)
 
             if can_proceed:
                 tracker.record_request(tokens)
@@ -149,7 +143,9 @@ class RateLimiter:
             "requests_today": len(tracker.requests),
             "requests_per_day_limit": limit.requests_per_day,
             "tokens_today": tracker.tokens_used,
-            "minute_remaining": max(0, limit.requests_per_minute - len(recent_requests)),
+            "minute_remaining": max(
+                0, limit.requests_per_minute - len(recent_requests)
+            ),
             "daily_remaining": max(0, limit.requests_per_day - len(tracker.requests)),
         }
 
@@ -169,9 +165,11 @@ class RateLimiter:
         if "free" not in model.lower():
             alternatives.append("openrouter/free")
 
-        alternatives.extend([
-            "deepseek/deepseek-chat-v3-0324",  # Budget option
-            "google/gemini-2.0-flash",  # Free Google option
-        ])
+        alternatives.extend(
+            [
+                "deepseek/deepseek-chat-v3-0324",  # Budget option
+                "google/gemini-2.0-flash",  # Free Google option
+            ]
+        )
 
         return alternatives

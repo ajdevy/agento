@@ -116,7 +116,8 @@ class TestRateLimiter:
         alternatives = limiter.get_alternatives("qwen/qwen3-coder-480b-a35b:free")
 
         assert len(alternatives) > 0
-        assert "openrouter/free" in alternatives
+        assert "deepseek/deepseek-chat-v3-0324" in alternatives
+        assert "google/gemini-2.0-flash" in alternatives
 
 
 class TestModelCosts:

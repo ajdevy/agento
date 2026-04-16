@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
-from typing import Annotated
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
 
-class TaskStatus(str, Enum):
+class TaskStatus(StrEnum):
     """Task status."""
 
     PENDING = "pending"
