@@ -1,70 +1,51 @@
 """Tests for main module."""
 
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 
 class TestMain:
     """Tests for main module."""
 
-    def test_run_without_api_key(self, capsys):
-        """Test run exits when no API key is configured."""
-        mock_settings = MagicMock()
-        mock_settings.has_api_key = False
-        mock_settings.default_model = "openrouter/free"
+    def test_check_api_key(self):
+        """Test check_api_key function."""
+        from agento.main import check_api_key
 
-        with patch("agento.main.settings", mock_settings):
-            from agento.main import run
+        with patch("agento.main.settings") as mock_settings:
+            mock_settings.openrouter_api_key.get_secret_value.return_value = "test-key"
+            mock_settings.deepseek_api_key = None
+            mock_settings.google_api_key = None
 
-            with pytest.raises(SystemExit) as exc_info:
-                run()
+            result = check_api_key()
+            assert result == "test-key"
 
-            assert exc_info.value.code == 1
+    def test_check_api_key_deepseek(self):
+        """Test check_api_key with DeepSeek."""
+        from agento.main import check_api_key
 
-            captured = capsys.readouterr()
-            assert "No API key configured" in captured.out
+        with patch("agento.main.settings") as mock_settings:
+            mock_settings.openrouter_api_key = None
+            mock_settings.deepseek_api_key.get_secret_value.return_value = (
+                "deepseek-key"
+            )
+            mock_settings.google_api_key = None
 
-    def test_run_with_api_key(self, capsys):
-        """Test run succeeds when API key is configured."""
-        mock_settings = MagicMock()
-        mock_settings.has_api_key = True
-        mock_settings.default_model = "openrouter/free"
+            result = check_api_key()
+            assert result == "deepseek-key"
 
-        with patch("agento.main.settings", mock_settings):
-            from agento.main import run
+    def test_check_api_key_no_key(self):
+        """Test check_api_key returns None when no key."""
+        from agento.main import check_api_key
 
-            run()
+        with patch("agento.main.settings") as mock_settings:
+            mock_settings.openrouter_api_key = None
+            mock_settings.deepseek_api_key = None
+            mock_settings.google_api_key = None
 
-            captured = capsys.readouterr()
-            assert "Configuration loaded successfully" in captured.out
-            assert "openrouter/free" in captured.out
+            result = check_api_key()
+            assert result is None
 
-    def test_run_with_custom_model(self, capsys):
-        """Test run with custom model configuration."""
-        mock_settings = MagicMock()
-        mock_settings.has_api_key = True
-        mock_settings.default_model = "qwen/qwen3-coder-480b-a35b:free"
+    def test_app_creation(self):
+        """Test app can be created."""
+        from agento.main import app
 
-        with patch("agento.main.settings", mock_settings):
-            from agento.main import run
-
-            run()
-
-            captured = capsys.readouterr()
-            assert "Configuration loaded successfully" in captured.out
-            assert "qwen/qwen3-coder-480b-a35b:free" in captured.out
-
-    def test_run_import_error(self, capsys):
-        """Test run handles ImportError gracefully."""
-        mock_settings = MagicMock()
-        mock_settings.has_api_key = True
-        mock_settings.default_model = "openrouter/free"
-
-        with patch("agento.main.settings", mock_settings):
-            from agento.main import run
-
-            run()
-
-            captured = capsys.readouterr()
-            assert "Agent initialization complete" in captured.out
+        assert app is not None
