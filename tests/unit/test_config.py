@@ -1,7 +1,5 @@
 """Tests for configuration."""
 
-import pytest
-from unittest.mock import patch
 
 from agento.config import Settings
 

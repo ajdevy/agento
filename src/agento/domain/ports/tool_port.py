@@ -24,20 +24,20 @@ class ToolPort(ABC):
     @abstractmethod
     def name(self) -> str:
         """Tool name."""
-        ...
+        ...  # pragma: no cover
 
     @property
     @abstractmethod
     def description(self) -> str:
         """Tool description."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     async def execute(self, **kwargs: Any) -> ToolResult:
         """Execute the tool."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     def validate(self, **kwargs: Any) -> bool:
         """Validate tool parameters."""
-        ...
+        ...  # pragma: no cover

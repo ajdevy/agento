@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import sys
 
+from agento.config import settings
+
 
 def run() -> None:
     """Run the Agento agent."""
@@ -12,8 +14,6 @@ def run() -> None:
     print("Initializing...")
 
     try:
-        from agento.config import settings
-
         if not settings.has_api_key:
             print("ERROR: No API key configured!")
             print("Please set one of:")

@@ -36,7 +36,7 @@ class LLMPort(ABC):
         **kwargs: Any,
     ) -> ModelResponse:
         """Send chat request to LLM."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     async def stream(
@@ -46,14 +46,14 @@ class LLMPort(ABC):
         **kwargs: Any,
     ) -> Any:
         """Stream chat response from LLM."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     def get_cost(self, model: str, tokens: int) -> float:
         """Get cost for model and token count."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     def get_rate_limit_status(self) -> dict[str, Any]:
         """Get current rate limit status."""
-        ...
+        ...  # pragma: no cover

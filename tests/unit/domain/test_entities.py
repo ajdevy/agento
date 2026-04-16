@@ -1,11 +1,9 @@
 """Tests for domain entities."""
 
-import pytest
-from datetime import datetime
 
-from agento.domain.entities.task import Task, TaskStatus
-from agento.domain.entities.plan import Plan
 from agento.domain.entities.memory import Memory, MemoryType
+from agento.domain.entities.plan import Plan
+from agento.domain.entities.task import Task, TaskStatus
 
 
 class TestTask:

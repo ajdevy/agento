@@ -1,9 +1,8 @@
 """Tests for core state and graph."""
 
-import pytest
 
-from agento.core.state import AgentState, Message
 from agento.core.graph import create_agent_graph
+from agento.core.state import AgentState, Message
 
 
 class TestAgentState:

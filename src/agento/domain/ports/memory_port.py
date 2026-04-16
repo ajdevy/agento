@@ -23,7 +23,7 @@ class MemoryPort(ABC):
     @abstractmethod
     async def add(self, content: str, metadata: dict[str, Any] | None = None) -> str:
         """Add a memory entry."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     async def search(
@@ -32,24 +32,24 @@ class MemoryPort(ABC):
         top_k: int = 5,
     ) -> list[MemoryEntry]:
         """Search for relevant memories."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     async def get(self, memory_id: str) -> MemoryEntry | None:
         """Get a specific memory."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     async def delete(self, memory_id: str) -> bool:
         """Delete a memory."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     async def clear(self) -> None:
         """Clear all memories."""
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     async def count(self) -> int:
         """Count total memories."""
-        ...
+        ...  # pragma: no cover
