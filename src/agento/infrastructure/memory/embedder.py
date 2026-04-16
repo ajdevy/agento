@@ -249,9 +249,9 @@ class OpenAIEmbedder(EmbedderBase):
                 embedding=embedding,
                 model=self.model,
                 dimension=len(embedding),
-                token_count=response.usage.prompt_tokens
-                if hasattr(response, "usage")
-                else None,
+                token_count=(
+                    response.usage.prompt_tokens if hasattr(response, "usage") else None
+                ),
             )
 
         except Exception:
@@ -281,9 +281,11 @@ class OpenAIEmbedder(EmbedderBase):
                     embedding=data.embedding,
                     model=self.model,
                     dimension=len(data.embedding),
-                    token_count=response.usage.prompt_tokens
-                    if hasattr(response, "usage")
-                    else None,
+                    token_count=(
+                        response.usage.prompt_tokens
+                        if hasattr(response, "usage")
+                        else None
+                    ),
                 )
                 for data in response.data
             ]
