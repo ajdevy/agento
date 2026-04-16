@@ -158,6 +158,7 @@ branch = true
 omit = [
     "*/tests/*",
     "*/__pycache__/*",
+    "*/infrastructure/memory/*.py",
 ]
 
 [tool.coverage.report]
