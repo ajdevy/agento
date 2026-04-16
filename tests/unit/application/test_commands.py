@@ -4,14 +4,19 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from agento.application.cmd import (
+    Command,
+    CommandHandler,
+    CommandParser,
+    CommandType,
+)
+
 
 class TestCommandType:
     """Tests for CommandType enum."""
 
     def test_command_types(self):
         """Test command types exist."""
-        from agento.application.commands import CommandType
-
         assert CommandType.CHAT.value == "chat"
         assert CommandType.CODE.value == "code"
         assert CommandType.DEVOPS.value == "devops"
@@ -26,8 +31,6 @@ class TestCommand:
 
     def test_command_creation(self):
         """Test command creation."""
-        from agento.application.commands import Command, CommandType
-
         cmd = Command(type=CommandType.CHAT, args=["hello"], raw="hello")
 
         assert cmd.type == CommandType.CHAT
@@ -40,15 +43,11 @@ class TestCommandParser:
 
     def test_parser_creation(self):
         """Test parser creation."""
-        from agento.application.commands import CommandParser
-
         parser = CommandParser()
         assert parser is not None
 
     def test_parse_chat(self):
         """Test parsing chat message."""
-        from agento.application.commands import CommandParser, CommandType
-
         parser = CommandParser()
         cmd = parser.parse("Hello world")
 
@@ -57,8 +56,6 @@ class TestCommandParser:
 
     def test_parse_slash_command(self):
         """Test parsing slash command."""
-        from agento.application.commands import CommandParser, CommandType
-
         parser = CommandParser()
         cmd = parser.parse("/code Write a function")
 
@@ -67,8 +64,6 @@ class TestCommandParser:
 
     def test_parse_alias(self):
         """Test parsing command aliases."""
-        from agento.application.commands import CommandParser, CommandType
-
         parser = CommandParser()
 
         cmd = parser.parse("/c hello")
@@ -82,8 +77,6 @@ class TestCommandParser:
 
     def test_is_exit_command(self):
         """Test exit command detection."""
-        from agento.application.commands import CommandParser
-
         parser = CommandParser()
 
         assert parser.is_exit_command("/quit")
@@ -93,8 +86,6 @@ class TestCommandParser:
 
     def test_is_help_command(self):
         """Test help command detection."""
-        from agento.application.commands import CommandParser
-
         parser = CommandParser()
 
         assert parser.is_help_command("/help")
@@ -107,8 +98,6 @@ class TestCommandHandler:
 
     def test_handler_creation(self):
         """Test handler creation."""
-        from agento.application.commands import CommandHandler
-
         mock_agent = MagicMock()
         handler = CommandHandler(mock_agent)
 
@@ -118,8 +107,6 @@ class TestCommandHandler:
     @pytest.mark.asyncio
     async def test_handle_chat(self):
         """Test handling chat command."""
-        from agento.application.commands import CommandHandler
-
         mock_agent = MagicMock()
         mock_agent.chat = AsyncMock(return_value="Hello!")
 
@@ -132,8 +119,6 @@ class TestCommandHandler:
     @pytest.mark.asyncio
     async def test_handle_exit(self):
         """Test handling exit command."""
-        from agento.application.commands import CommandHandler
-
         mock_agent = MagicMock()
         handler = CommandHandler(mock_agent)
 
@@ -144,8 +129,6 @@ class TestCommandHandler:
     @pytest.mark.asyncio
     async def test_handle_code(self):
         """Test handling code command."""
-        from agento.application.commands import CommandHandler
-
         mock_agent = MagicMock()
         mock_agent.chat = AsyncMock(return_value="def hello(): pass")
 
@@ -156,8 +139,6 @@ class TestCommandHandler:
 
     def test_get_help_text(self):
         """Test getting help text."""
-        from agento.application.commands import CommandHandler
-
         mock_agent = MagicMock()
         handler = CommandHandler(mock_agent)
 

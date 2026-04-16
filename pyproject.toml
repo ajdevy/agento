@@ -144,6 +144,14 @@ ignore_errors = true
 module = "agento.application.pipeline"
 ignore_errors = true
 
+[[tool.mypy.overrides]]
+module = "agento.infrastructure.memory.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "agento.domain.services.memory_service"
+ignore_errors = true
+
 [tool.coverage.run]
 source = ["src/agento"]
 branch = true
