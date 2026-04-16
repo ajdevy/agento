@@ -13,7 +13,6 @@ from agento.infrastructure.llm.openrouter import OpenRouterClient
 from agento.infrastructure.llm.router import ModelRouter
 from agento.ui.console import Console
 
-
 # mypy: disable-error-code=attr-defined,no-any-return
 
 
