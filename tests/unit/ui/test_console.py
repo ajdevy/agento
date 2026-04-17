@@ -155,6 +155,26 @@ class TestConsole:
             console.clear()
             mock_clear.assert_called_once()
 
+    def test_print_banner(self):
+        """Test banner printing."""
+        from agento.ui.console import Console
+
+        console = Console()
+
+        with patch.object(console._console, "print") as mock_print:
+            console.print_banner()
+            mock_print.assert_called_once()
+
+    def test_print_help_hint(self):
+        """Test help hint printing."""
+        from agento.ui.console import Console
+
+        console = Console()
+
+        with patch.object(console._console, "print") as mock_print:
+            console.print_help_hint()
+            mock_print.assert_called_once()
+
 
 class TestConsoleModule:
     """Tests for console module-level instance."""

@@ -82,8 +82,8 @@ colab = [
 ]
 
 [project.scripts]
-agent = "agento.main:cli"
-agento = "agento.main:cli"
+agent = "agento.main:main"
+agento = "agento.main:main"
 
 [project.urls]
 Homepage = "https://github.com/ajdevy/agento"
@@ -159,6 +159,7 @@ omit = [
     "*/tests/*",
     "*/__pycache__/*",
     "*/infrastructure/memory/*.py",
+    "*/main.py",
 ]
 
 [tool.coverage.report]

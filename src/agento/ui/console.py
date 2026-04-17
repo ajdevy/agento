@@ -88,5 +88,21 @@ class Console:
         """Clear the console."""
         self._console.clear()
 
+    def print_banner(self) -> None:
+        """Print the application banner."""
+        banner = """
+[bold magenta]╔══════════════════════════════════════════════════════════════╗[/bold magenta]
+[bold magenta]║[/bold magenta]  [bold cyan]AGENTO[/bold cyan] - AI Coding Assistant                              [bold magenta]║[/bold magenta]
+[bold magenta]║[/bold magenta]  [dim]Your intelligent coding companion[/dim]                          [bold magenta]║[/bold magenta]
+[bold magenta]╚══════════════════════════════════════════════════════════════╝[/bold magenta]
+        """
+        self._console.print(banner)
+
+    def print_help_hint(self) -> None:
+        """Print hint about getting API key."""
+        self._console.print(
+            "[dim]Get your free API key at: https://openrouter.ai/keys[/dim]"
+        )
+
 
 console = Console()

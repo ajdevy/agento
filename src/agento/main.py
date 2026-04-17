@@ -1,124 +1,101 @@
-"""Agento main entry point."""
+"""Agento main entry point - TUI Interface."""
 
 from __future__ import annotations
 
 import asyncio
+import sys
 
-import typer
-
-from agento.application.pipeline import Pipeline, PipelineConfig
 from agento.config import settings
 from agento.ui.console import console
-
-app = typer.Typer(help="Agento - AI Coding Assistant")
 
 
 def check_api_key() -> str | None:
     """Check for API key and return it."""
-    if (
-        settings.openrouter_api_key and settings.openrouter_api_key.get_secret_value()
-    ):  # pragma: no cover
-        return settings.openrouter_api_key.get_secret_value()  # pragma: no cover
-    if (
-        settings.deepseek_api_key and settings.deepseek_api_key.get_secret_value()
-    ):  # pragma: no cover
-        return settings.deepseek_api_key.get_secret_value()  # pragma: no cover
-    if (
-        settings.google_api_key and settings.google_api_key.get_secret_value()
-    ):  # pragma: no cover
-        return settings.google_api_key.get_secret_value()  # pragma: no cover
+    if settings.openrouter_api_key and settings.openrouter_api_key.get_secret_value():
+        return settings.openrouter_api_key.get_secret_value()
+    if settings.deepseek_api_key and settings.deepseek_api_key.get_secret_value():
+        return settings.deepseek_api_key.get_secret_value()
+    if settings.google_api_key and settings.google_api_key.get_secret_value():
+        return settings.google_api_key.get_secret_value()
     return None
 
 
-@app.command()
-def run(  # pragma: no cover
-    model: str = typer.Option(None, "--model", "-m", help="Model to use"),
-    show_cost: bool = typer.Option(
-        True, "--show-cost/--no-cost", help="Show cost preview"
-    ),
-    show_model: bool = typer.Option(
-        True, "--show-model/--no-model", help="Show model info"
-    ),
-) -> None:  # pragma: no cover
-    """Run the Agento agent."""  # pragma: no cover
-    console.print("Agento v0.1.0")
-    console.print("=" * 50)
+async def run_tui(model: str | None = None) -> None:
+    """Run the interactive TUI."""
+    from agento.application.pipeline import Pipeline, PipelineConfig
 
     api_key = check_api_key()
     if not api_key:
         console.print_error("No API key configured!")
-        console.print("Please set one of:")
-        console.print("  - OPENROUTER_API_KEY")
-        console.print("  - DEEPSEEK_API_KEY")
-        console.print("  - GOOGLE_API_KEY")
-        console.print("\nCreate a .env file or export the API key.")
-        raise typer.Exit(code=1)
+        console.print("")
+        console.print("Please set one of the following environment variables:")
+        console.print(
+            "  • OPENROUTER_API_KEY (recommended - get free key at openrouter.ai)"
+        )
+        console.print("  • DEEPSEEK_API_KEY")
+        console.print("  • GOOGLE_API_KEY")
+        console.print("")
+        console.print("Create a .env file or export the API key.")
+        console.print("")
+        console.print_help_hint()
+        sys.exit(1)
 
-    config = PipelineConfig(
-        model=model or settings.default_model,
-        show_cost=show_cost,
-        show_model=show_model,
-    )
-
-    async def main() -> None:
-        async with Pipeline(api_key=api_key, config=config) as pipeline:
-            await pipeline.run()
+    config = PipelineConfig(model=model or settings.default_model)
 
     try:
-        asyncio.run(main())
+        async with Pipeline(api_key=api_key, config=config) as pipeline:
+            await pipeline.run()
     except KeyboardInterrupt:
         console.print_success("\nGoodbye!")
     except Exception as e:
         console.print_error(f"Error: {e!s}")
-        msg = e
-        raise typer.Exit(code=1) from msg
+        sys.exit(1)
 
 
-@app.command()
-def chat(  # pragma: no cover
-    message: str = typer.Argument(..., help="Message to send"),
-    model: str = typer.Option(None, "--model", "-m", help="Model to use"),
-) -> None:  # pragma: no cover
-    """Send a single chat message."""  # pragma: no cover
-    api_key = check_api_key()
-    if not api_key:
-        console.print_error("No API key configured!")
-        raise typer.Exit(code=1)
+def main() -> None:
+    """Main entry point."""
+    console.print_banner()
 
-    config = PipelineConfig(model=model or settings.default_model)
+    import argparse
 
-    async def main() -> None:
-        async with Pipeline(api_key=api_key, config=config) as pipeline:
-            response = await pipeline.chat(message)
-            console.print_markdown(response)
+    parser = argparse.ArgumentParser(
+        prog="agento",
+        description="Agento - AI Coding Assistant",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "-m",
+        "--model",
+        type=str,
+        default=None,
+        help="Model to use (e.g., openrouter/free, anthropic/claude-3.5-sonnet)",
+    )
+    parser.add_argument(
+        "--no-cost",
+        action="store_true",
+        help="Hide cost preview",
+    )
+    parser.add_argument(
+        "--no-model",
+        action="store_true",
+        help="Hide model info",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="Agento v0.1.0",
+    )
 
-    asyncio.run(main())
+    args = parser.parse_args()
 
+    config_overrides = {}
+    if args.no_cost:
+        config_overrides["show_cost"] = False
+    if args.no_model:
+        config_overrides["show_model"] = False
 
-@app.command()
-def models() -> None:  # pragma: no cover
-    """List available models."""  # pragma: no cover
-    from agento.infrastructure.llm.router import MODEL_ROUTING  # pragma: no cover
-
-    console.print_panel("Available Models", title="Agento")  # pragma: no cover
-
-    for task_type, routing in MODEL_ROUTING.items():  # pragma: no cover
-        console.print(f"\n[bold]{task_type.upper()}:[/bold]")  # pragma: no cover
-        console.print(f"  Free:     {routing.free}")  # pragma: no cover
-        console.print(f"  Primary:  {routing.primary}")  # pragma: no cover
-        console.print(f"  Fallback: {routing.fallback}")  # pragma: no cover
-
-
-@app.command()
-def version() -> None:  # pragma: no cover
-    """Show version information."""  # pragma: no cover
-    console.print("Agento v0.1.0")  # pragma: no cover
-
-
-def cli() -> None:
-    """Main CLI entry point."""
-    app()
+    asyncio.run(run_tui(model=args.model))
 
 
 if __name__ == "__main__":
-    cli()
+    main()

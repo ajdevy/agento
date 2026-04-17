@@ -2,6 +2,8 @@
 
 from unittest.mock import patch
 
+import pytest
+
 
 class TestMain:
     """Tests for main module."""
@@ -44,8 +46,19 @@ class TestMain:
             result = check_api_key()
             assert result is None
 
-    def test_app_creation(self):
-        """Test app can be created."""
-        from agento.main import app
+    def test_run_tui_exits_without_api_key(self):
+        """Test run_tui exits when no API key."""
+        import asyncio
+        from agento.main import run_tui
 
-        assert app is not None
+        with patch("agento.main.check_api_key", return_value=None):
+            with pytest.raises(SystemExit) as exc_info:
+                asyncio.run(run_tui())
+            assert exc_info.value.code == 1
+
+    def test_main_function_exists(self):
+        """Test main function can be imported."""
+        from agento.main import main
+
+        assert main is not None
+        assert callable(main)
