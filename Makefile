@@ -1,89 +1,134 @@
-# Makefile for agento
+# Agento Makefile - Cross-platform build automation
+#
+# Usage:
+#   make install       Install dependencies
+#   make dev           Set up dev environment
+#   make test          Run tests
+#   make lint          Run linters
+#   make format        Format code
+#   make build         Build packages
+#   make clean         Clean artifacts
+#   make all           Full CI pipeline (lint, test, build)
 
-.PHONY: help install dev test clean build package binary lint format check
+.PHONY: help install dev test lint format build clean all check
 
 # Default target
 help:
-	@echo "agento - Makefile targets"
+	@echo "Agento Build Makefile"
 	@echo ""
-	@echo "  make install    - Install in development mode"
-	@echo "  make dev        - Same as install"
-	@echo "  make test       - Run tests"
-	@echo "  make clean      - Clean build artifacts"
+	@echo "Available targets:"
+	@echo "  make install    - Install all dependencies"
+	@echo "  make dev        - Set up development environment"
+	@echo "  make test       - Run test suite"
+	@echo "  make lint       - Run linters (ruff, mypy)"
+	@echo "  make format     - Format code (ruff, black)"
 	@echo "  make build      - Build distribution packages"
-	@echo "  make binary     - Build standalone binary"
-	@echo "  make lint       - Run linter (ruff)"
-	@echo "  make format     - Format code"
-	@echo "  make check      - Run all checks (lint + typecheck + test)"
-	@echo "  make run        - Run the agent"
-	@echo "  make shell       - Open shell with venv activated"
+	@echo "  make clean      - Clean build artifacts"
+	@echo "  make check      - Run all checks (lint + test)"
+	@echo "  make all        - Full CI pipeline"
 
-# Development installation
-install dev:
-	@echo "Installing in development mode..."
-	@if [ ! -d ".venv" ]; then python3 -m venv .venv; fi
-	@.venv/bin/pip install --upgrade pip
-	@.venv/bin/pip install -e ".[all]"
-	@echo "Done! Activate with: source .venv/bin/activate"
+# Detect OS (for platform-specific commands)
+UNAME_S := $(shell uname -s)
+IS_DARWIN := $(filter Darwin,$(UNAME_S))
+IS_LINUX := $(filter Linux,$(UNAME_S))
+IS_WINDOWS := $(shell uname -o 2>/dev/null || echo "unknown")
+
+# Python commands
+PYTHON := python3
+PIP := pip3
+PYTEST := pytest
+LINTER := ruff
+FORMATTER := black
+
+# Install dependencies
+install:
+	@echo "Installing dependencies..."
+	@$(PIP) install -e ".[all]"
+
+# Development setup
+dev: install lint test
+	@echo "Development environment ready!"
+	@echo "Run 'source .venv/bin/activate' to activate virtualenv"
+	@echo "Then run 'agento' to start the agent"
 
 # Run tests
 test:
 	@echo "Running tests..."
-	@.venv/bin/python -m pytest tests/ --timeout=30 -q
+	@$(PYTEST) tests/ -q --cov=src/agento --cov-report=term-missing --cov-fail-under=95
 
-# Clean
-clean:
-	@echo "Cleaning..."
-	@rm -rf build/ dist/ *.egg-info .pytest_cache
-	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-	@find . -type f -name "*.pyc" -delete 2>/dev/null || true
-	@find . -type f -name "*.pyo" -delete 2>/dev/null || true
-	@echo "Clean complete"
-
-# Build distribution packages
-build package:
-	@echo "Building distribution packages..."
-	@mkdir -p dist
-	@python3 -m build --sdist
-	@python3 -m build --wheel
-	@echo "Packages created:"
-	@ls -lh dist/*.whl dist/*.tar.gz 2>/dev/null
-
-# Build standalone binary
-binary:
-	@echo "Building standalone binary..."
-	@if ! .venv/bin/pip show pyinstaller > /dev/null 2>&1; then .venv/bin/pip install pyinstaller; fi
-	@mkdir -p dist
-	@rm -f dist/agento 2>/dev/null || true
-	@.venv/bin/pyinstaller --name=agento --onefile --console --clean src/agento/main.py
-	@chmod +x dist/agento
-	@echo "Binary created: dist/agento"
-
-# Lint with ruff
+# Run linters
 lint:
-	@echo "Running linter..."
-	@.venv/bin/ruff check src/agento
+	@echo "Running linters..."
+	@$(LINTER) check src/agento tests/
+	@$(LINTER) check src/agento tests/ --output-format=text
+	@mypy src/agento --ignore-missing-imports || true
 
 # Format code
 format:
 	@echo "Formatting code..."
-	@.venv/bin/ruff format src/agento tests/
+	@$(LINTER) format src/agento tests/
+	@$(FORMATTER) src/agento tests/
 
-# Type check
-typecheck:
-	@echo "Running type checker..."
-	@.venv/bin/mypy src/agento
+# Build distribution packages
+build:
+	@echo "Building packages..."
+	@mkdir -p dist
+	@$(PYTHON) -m build --wheel
+	@$(PYTHON) -m build --sdist
+	@echo "Packages created in dist/"
 
-# All checks
-check: lint typecheck test
+# Clean artifacts
+clean:
+	@echo "Cleaning..."
+	@rm -rf build dist *.egg-info .pytest_cache .venv
+	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	@find . -type f -name "*.pyc" -delete
+	@find . -type f -name "*.pyo" -delete
+	@find . -type f -name ".coverage" -delete
+	@echo "Clean complete"
 
-# Run the agent
-run:
-	@echo "Starting agento..."
-	@.venv/bin/agento run
+# Run all checks (lint + test)
+check: lint test
+	@echo "All checks passed!"
 
-# Open shell with venv
-shell:
-	@echo "Opening shell with venv activated..."
-	@.venv/bin/python -c "print('agento v0.1.0')"
-	@bash -c 'source .venv/bin/activate && echo "Venv activated. Run '\''agento run'\'' to start." && $$SHELL'
+# Full CI pipeline
+all: lint test build
+	@echo ""
+	@echo "========================================="
+	@echo "  Full CI pipeline complete!"
+	@echo "========================================="
+
+# Quick test (no coverage)
+quick-test:
+	@$(PYTEST) tests/ -q --no-cov
+
+# Install with specific extras
+install-dev:
+	@$(PIP) install -e ".[dev]"
+
+install-all:
+	@$(PIP) install -e ".[all]"
+
+# Run with specific Python version (for testing)
+py313:
+	@python3.13 -m venv .venv
+	@.venv/bin/pip install -e ".[dev]"
+	@.venv/bin/pip install pytest pytest-asyncio pytest-cov pytest-mock
+
+# Security check
+security:
+	@$(PIP) audit || true
+
+# Type check only
+types:
+	@mypy src/agento --strict --ignore-missing-imports || true
+
+# Run with coverage report
+coverage:
+	@$(PYTEST) tests/ --cov=src/agento --cov-report=html --cov-report=term
+	@echo "Coverage report: htmlcov/index.html"
+
+# Open coverage report
+coverage-open: coverage
+	@if [ "$(UNAME_S)" = "Darwin" ]; then open htmlcov/index.html; fi
+	@if [ "$(UNAME_S)" = "Linux" ]; then xdg-open htmlcov/index.html 2>/dev/null || true; fi

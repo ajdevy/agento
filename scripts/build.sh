@@ -251,7 +251,7 @@ main() {
     if [ "$DEV" = true ]; then
         success "Development mode ready!"
         info "Activate with: source .venv/bin/activate"
-        info "Run agento: agento run"
+        info "Run agento: agento"
         exit 0
     fi
 
@@ -270,7 +270,7 @@ main() {
     if [ "$PACKAGE" = false ] && [ "$BINARY" = false ] && [ "$TEST" = false ]; then
         success "Development mode ready!"
         info "Activate with: source .venv/bin/activate"
-        info "Run agento: agento run"
+        info "Run agento: agento"
         info ""
         info "Other options:"
         info "  --test    Run tests"
