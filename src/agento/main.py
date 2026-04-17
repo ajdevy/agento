@@ -115,5 +115,10 @@ def version() -> None:  # pragma: no cover
     console.print("Agento v0.1.0")  # pragma: no cover
 
 
-if __name__ == "__main__":
+def cli() -> None:
+    """Main CLI entry point."""
     app()
+
+
+if __name__ == "__main__":
+    cli()

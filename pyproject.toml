@@ -82,8 +82,8 @@ colab = [
 ]
 
 [project.scripts]
-agent = "agento.main:run"
-agento = "agento.main:run"
+agent = "agento.main:cli"
+agento = "agento.main:cli"
 
 [project.urls]
 Homepage = "https://github.com/ajdevy/agento"

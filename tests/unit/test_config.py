@@ -1,5 +1,7 @@
 """Tests for configuration."""
 
+import os
+from unittest.mock import patch
 
 from agento.config import Settings
 
@@ -18,9 +20,18 @@ class TestSettings:
 
     def test_has_api_key_none(self):
         """Test has_api_key with no keys."""
-        settings = Settings()
-
-        assert settings.has_api_key is False
+        with patch.dict(
+            os.environ,
+            {"OPENROUTER_API_KEY": "", "DEEPSEEK_API_KEY": "", "GOOGLE_API_KEY": ""},
+            clear=True,
+        ):
+            with patch.object(
+                Settings,
+                "model_config",
+                {"env_file": ".env.non_existent", "extra": "ignore"},
+            ):
+                settings = Settings(_env_file=".env.non_existent")
+                assert settings.has_api_key is False
 
     def test_has_api_key_with_key(self):
         """Test has_api_key with key set."""
