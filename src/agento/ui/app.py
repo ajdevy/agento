@@ -45,7 +45,9 @@ Commands: /help, /clear, /model, /quit
                 color = (
                     "green"
                     if msg.role == "assistant"
-                    else "yellow" if msg.role == "user" else "dim"
+                    else "yellow"
+                    if msg.role == "user"
+                    else "dim"
                 )
                 lines.append(f"[{color}]{role}[/{color}]: {msg.content[:200]}")
 
