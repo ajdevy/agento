@@ -153,7 +153,7 @@ class ErrorClassifier:
         ),
     ]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._error_history: list[ErrorInfo] = []
 
     def classify(

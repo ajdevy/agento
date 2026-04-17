@@ -240,10 +240,12 @@ class ExecutionService:
             for result in step_results:
                 if isinstance(result, Exception):
                     errors.append(str(result))
-                elif result[2]:
-                    errors.append(f"Step {result[0]} failed: {result[2]}")
-                elif result[1]:
-                    results[result[0]] = result[1]
+                elif isinstance(result, tuple):
+                    step_id, step_result, step_error = result
+                    if step_error:
+                        errors.append(f"Step {step_id} failed: {step_error}")
+                    elif step_result:
+                        results[step_id] = step_result
 
         return errors, results
 

@@ -174,6 +174,8 @@ class PlanningService:
         """Use LLM for planning."""
         context = context or {}
 
+        assert self.llm_client is not None
+
         prompt = f"""Break down this goal into clear, executable steps:
 
 Goal: {goal}
@@ -190,7 +192,7 @@ Requirements:
             messages=[{"role": "user", "content": prompt}]
         )
 
-        steps = self._parse_llm_response(response.content, goal)
+        steps = self._parse_llm_response(str(response.content), goal)
         plan = Plan(id=str(id(response)), goal=goal, steps=steps)
         self._planning_history.append(plan)
 

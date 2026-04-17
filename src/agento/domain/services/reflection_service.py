@@ -94,6 +94,8 @@ class ReflectionService:
         context = context or {}
         criteria = criteria or ["correctness", "completeness", "clarity"]
 
+        assert self.llm_client is not None
+
         prompt = f"""Reflect on this output and assess its quality:
 
 Content: {content}
@@ -112,7 +114,7 @@ Provide:
             messages=[{"role": "user", "content": prompt}]
         )
 
-        result = self._parse_llm_response(response.content, content)
+        result = self._parse_llm_response(str(response.content), content)
         self._reflection_history.append(result)
 
         return result
@@ -218,7 +220,7 @@ Provide:
         issues: list[str],
     ) -> QualityScore:
         """Calculate quality score based on rules."""
-        score = 5
+        score: float = 5.0
 
         if len(content) < 50:
             score -= 1

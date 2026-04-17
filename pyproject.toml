@@ -152,26 +152,6 @@ ignore_errors = true
 module = "agento.domain.services.memory_service"
 ignore_errors = true
 
-[[tool.mypy.overrides]]
-module = "agento.domain.services.planning_service"
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = "agento.domain.services.reflection_service"
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = "agento.domain.services.execution_service"
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = "agento.core.retry"
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = "agento.core.errors"
-ignore_errors = true
-
 [tool.coverage.run]
 source = ["src/agento"]
 branch = true

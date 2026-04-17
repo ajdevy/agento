@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from functools import wraps
-from typing import Any, TypeVar
+from typing import Any, Callable, TypeVar, cast
 
 from typing_extensions import ParamSpec
 
@@ -183,23 +182,23 @@ def with_retry(
             result = await policy.execute(func, *args, **kwargs)
             if not result.success and result.error:
                 raise result.error
-            return result.result
+            return cast(T, result.result)
 
         @wraps(func)
         def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             policy_sync = RetryPolicy(config)
 
-            async def run_async():
+            async def run_async() -> RetryResult:
                 return await policy_sync.execute(func, *args, **kwargs)
 
             result = asyncio.run(run_async())
             if not result.success and result.error:
                 raise result.error
-            return result.result
+            return cast(T, result.result)
 
         if asyncio.iscoroutinefunction(func):
-            return async_wrapper
-        return sync_wrapper
+            return cast(Callable[P, T], async_wrapper)
+        return cast(Callable[P, T], sync_wrapper)
 
     return decorator
 
@@ -219,8 +218,10 @@ async def retry_with_backoff(
     for attempt in range(max_attempts):
         try:
             if asyncio.iscoroutinefunction(func):
-                return await func(*args, **kwargs)
-            return func(*args, **kwargs)
+                result = await func(*args, **kwargs)
+            else:
+                result = func(*args, **kwargs)
+            return cast(T, result)
         except exceptions as e:
             last_error = e
             if attempt < max_attempts - 1:
@@ -284,7 +285,7 @@ class CircuitBreaker:
             else:
                 result = func(*args, **kwargs)
             self.record_success()
-            return result
+            return cast(T, result)
         except self.expected_exception as e:
             self.record_failure()
             raise e
