@@ -1,36 +1,131 @@
-# Agento - AI CLI/TUI Agent
+# Agento - AI Coding Assistant
 
-CLI/TUI AI agent for code generation and DevOps automation.
+A CLI/TUI AI agent for code generation and DevOps automation with LangGraph.
 
 ## Features
 
+- **TUI Interface**: Interactive chat interface - just type `agento` to start
 - **Code Generation**: Generate and modify code in Python, Node, Rust, Go
 - **DevOps**: CI/CD (GitHub Actions, GitLab CI), Docker, Kubernetes
 - **Memory**: Vector-based semantic search with FAISS
 - **Planning**: Autonomous task decomposition and reflection
 - **Multi-Agent**: Specialized sub-agents working together
 - **Skills**: MCP-based extensible plugin system
-- **Spec Generation**: Auto-generate OpenSpec documentation
 
 ## Quick Start
 
+### 1. Get an API Key
+
+Get a free API key from [OpenRouter](https://openrouter.ai/keys) (recommended) or set one of:
+
 ```bash
-# Install
+OPENROUTER_API_KEY=sk-or-v1-xxxxx
+DEEPSEEK_API_KEY=your-key
+GOOGLE_API_KEY=your-key
+```
+
+### 2. Install
+
+```bash
+# From PyPI
 pip install agento
 
-# Or with Poetry
-poetry add agento
+# Or from source
+git clone https://github.com/ajdevy/agento.git
+cd agento
+pip install -e .
+```
 
-# Set API key
-export OPENROUTER_API_KEY=sk-or-v1-xxxxx
+### 3. Run
+
+```bash
+# Just run - launches TUI
+agento
+
+# With specific model
+agento -m openrouter/free
+
+# Hide cost preview
+agento --no-cost
+```
+
+## Build Instructions
+
+### Prerequisites
+
+- Python 3.11+
+- pip
+
+### Option 1: Bash Script (macOS/Linux)
+
+```bash
+# Development mode
+./scripts/build.sh --dev
+
+# Run tests
+./scripts/build.sh --test
+
+# Build packages
+./scripts/build.sh --package
+
+# Install globally
+./scripts/build.sh --install
+```
+
+### Option 2: PowerShell (Windows)
+
+```powershell
+# Development mode
+.\scripts\build.ps1 -Dev
+
+# Run tests
+.\scripts\build.ps1 -Test
+
+# Build packages
+.\scripts\build.ps1 -Package
+
+# Install globally
+.\scripts\build.ps1 -Install
+```
+
+### Option 3: Make (Cross-platform)
+
+```bash
+make help        # Show all targets
+make dev         # Dev environment (install + test)
+make test        # Run tests
+make lint        # Run linters
+make format      # Format code
+make build       # Build packages
+make clean       # Clean artifacts
+make all         # Full CI pipeline
+```
+
+### Option 4: Manual
+
+```bash
+# Clone
+git clone https://github.com/ajdevy/agento.git
+cd agento
+
+# Create venv
+python3 -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate   # Windows
+
+# Install
+pip install -e ".[dev]"
+
+# Run tests
+pytest tests/ -q --cov=src/agento --cov-fail-under=95
 
 # Run
-agent
+agento
 ```
 
 ## Configuration
 
-Create a `.env` file or set environment variables:
+Create a `.env` file:
 
 ```bash
 # Required (at least one)
@@ -39,20 +134,8 @@ OPENROUTER_API_KEY=sk-or-v1-xxxxx
 # Optional
 DEFAULT_MODEL=openrouter/free
 LOG_LEVEL=INFO
+AUTONOMY_LEVEL=1
 ```
-
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `/code <prompt>` | Generate or modify code |
-| `/devops <task>` | DevOps tasks (CI/CD, Docker, K8s) |
-| `/memory search <query>` | Semantic search |
-| `/plan <task>` | Create execution plan |
-| `/multi <task>` | Run with multiple agents |
-| `/model <action>` | Manage models |
-| `/skills <action>` | Manage skills |
-| `/spec <action>` | Spec generation |
 
 ## Architecture
 
@@ -62,7 +145,7 @@ src/agento/
 ├── application/           # APPLICATION - Orchestration
 ├── domain/               # DOMAIN - Business logic
 │   ├── entities/        # Task, Plan, Memory, Spec
-│   ├── services/         # Planning, Execution
+│   ├── services/         # Planning, Execution, Reflection
 │   └── ports/           # Interfaces
 ├── infrastructure/       # INFRASTRUCTURE - Adapters
 │   ├── llm/            # OpenRouter, DeepSeek, Gemini
@@ -76,41 +159,21 @@ src/agento/
 ## Development
 
 ```bash
-# Clone
-git clone https://github.com/ajdevy/agento.git
-cd agento
-
-# Install dependencies
-poetry install
-
 # Install dev dependencies
-poetry install --with dev
+pip install -e ".[dev]"
 
 # Run tests
-poetry run pytest
-
-# Run with coverage
-poetry run pytest --cov=src/agento --cov-fail-under=95
+pytest tests/ -q --cov=src/agento --cov-fail-under=95
 
 # Lint
-poetry run ruff check .
+ruff check src/agento tests/
 
 # Format
-poetry run black .
-```
+ruff format src/agento tests/
+black src/agento tests/
 
-## Model Configuration
-
-Default: Free models first (cost-efficient)
-
-```python
-MODEL_ROUTING = {
-    "code_generation": {
-        "free": "qwen/qwen3-coder-480b-a35b:free",
-        "primary": "anthropic/claude-3.5-sonnet",
-        "fallback": "deepseek/deepseek-chat-v3-0324",
-    },
-}
+# Type check
+mypy src/agento
 ```
 
 ## Docker
