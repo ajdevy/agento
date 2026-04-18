@@ -1,7 +1,6 @@
 """Tests for UI module."""
 
 
-
 class TestUIConsole:
     """Tests for Console class."""
 
@@ -61,13 +60,14 @@ class TestUIApp:
 
     def test_render_messages_with_content(self):
         """Test rendering messages with content."""
-        from agento.core.state import Message
+        from langchain_core.messages import AIMessage, HumanMessage
+
         from agento.ui.app import TUIApp
 
         app = TUIApp()
         app.messages = [
-            Message(role="user", content="Hello"),
-            Message(role="assistant", content="Hi there!"),
+            HumanMessage(content="Hello"),
+            AIMessage(content="Hi there!"),
         ]
         panel = app.render_messages()
         assert panel is not None
@@ -102,12 +102,14 @@ class TestUIApp:
 
     def test_update_state(self):
         """Test updating state."""
-        from agento.core.state import AgentState, Message
+        from langchain_core.messages import HumanMessage
+
+        from agento.core.state import AgentState
         from agento.ui.app import TUIApp
 
         app = TUIApp()
         state = AgentState(
-            messages=[Message(role="user", content="Hi")],
+            messages=[HumanMessage(content="Hi")],
             model="openrouter/free",
         )
 

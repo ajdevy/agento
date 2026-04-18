@@ -4,11 +4,14 @@ from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
 
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from rich.panel import Panel
 from rich.table import Table
 
-from agento.core.state import AgentState, Message
+from agento.core.state import AgentState
 from agento.ui.console import Console as RichConsole
+
+Message = HumanMessage | AIMessage | SystemMessage
 
 
 class TUIApp:
@@ -41,13 +44,18 @@ Commands: /help, /clear, /model, /quit
         else:
             lines = []
             for msg in self.messages[-10:]:
-                role = msg.role.upper()
+                # Handle both langchain messages and custom dicts
+                role = getattr(msg, "type", "human")
+                if role == "ai":
+                    role = "assistant"
                 color = (
                     "green"
-                    if msg.role == "assistant"
-                    else "yellow" if msg.role == "user" else "dim"
+                    if role == "assistant"
+                    else "yellow"
+                    if role == "human"
+                    else "dim"
                 )
-                lines.append(f"[{color}]{role}[/{color}]: {msg.content[:200]}")
+                lines.append(f"[{color}]{role.upper()}[/{color}]: {msg.content[:200]}")
 
             content = "\n".join(lines) if lines else "[dim]No messages[/dim]"
 
