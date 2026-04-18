@@ -30,7 +30,6 @@ dependencies = [
 
     # UI
     "rich>=13.7.0",
-    "textual>=0.80.0",
 
     # Data
     "pydantic>=2.6.0",
@@ -38,7 +37,6 @@ dependencies = [
 
     # Utilities
     "python-dotenv>=1.0.0",
-    "typer>=0.12.0",
 ]
 
 [project.optional-dependencies]

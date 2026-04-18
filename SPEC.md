@@ -96,7 +96,7 @@
 
 - **Core:** langgraph, langchain-core, langchain-community
 - **LLM:** openai, httpx
-- **UI:** rich, textual, typer
+- **UI:** rich (TTY rendering)
 - **Data:** pydantic, pydantic-settings, python-dotenv
 
 ### Entry Point
