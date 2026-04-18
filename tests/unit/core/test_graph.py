@@ -1,5 +1,6 @@
 """Tests for graph nodes."""
 
+from langchain_core.messages import AIMessage, HumanMessage
 
 
 class TestRouterNode:
@@ -18,24 +19,24 @@ class TestRouterNode:
     def test_router_with_user_message(self):
         """Test router with user message."""
         from agento.core.graph import router_node
-        from agento.core.state import AgentState, Message
+        from agento.core.state import AgentState
 
         state = AgentState()
-        state.messages.append(Message(role="user", content="Hello"))
+        state.messages.append(HumanMessage(content="Hello"))
 
         result = router_node(state)
-        assert result["current_mode"] == "user"
+        assert result["current_mode"] == "human"
 
     def test_router_with_assistant_message(self):
         """Test router with assistant message."""
         from agento.core.graph import router_node
-        from agento.core.state import AgentState, Message
+        from agento.core.state import AgentState
 
         state = AgentState()
-        state.messages.append(Message(role="assistant", content="Hi"))
+        state.messages.append(AIMessage(content="Hi"))
 
         result = router_node(state)
-        assert result["current_mode"] == "assistant"
+        assert result["current_mode"] == "ai"
 
 
 class TestChatNode:

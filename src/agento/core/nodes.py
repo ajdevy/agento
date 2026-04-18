@@ -4,8 +4,12 @@ from __future__ import annotations
 
 from typing import Any, TypedDict
 
-from agento.core.state import AgentState, Message
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+
+from agento.core.state import AgentState
 from agento.infrastructure.llm.openrouter import OpenRouterClient
+
+Message = HumanMessage | AIMessage | SystemMessage
 
 
 class NodeResult(TypedDict):
@@ -31,7 +35,7 @@ async def chat_node_fn(
 
 Be concise and helpful. Format code blocks properly."""
 
-    messages = [Message(role="system", content=system_prompt)]
+    messages = [SystemMessage(content=system_prompt)]
     messages.extend(state.messages)
 
     try:
@@ -41,10 +45,7 @@ Be concise and helpful. Format code blocks properly."""
             temperature=0.7,
         )
 
-        assistant_message = Message(
-            role="assistant",
-            content=response.content,
-        )
+        assistant_message = AIMessage(content=response.content)
 
         return {
             "messages": [assistant_message],
@@ -85,7 +86,7 @@ Be specific and break down into actionable steps."""
 
     try:
         response = await llm_client.chat(
-            messages=[Message(role="user", content=planning_prompt)],
+            messages=[HumanMessage(content=planning_prompt)],
             model=state.model,
             temperature=0.3,
         )
@@ -151,13 +152,12 @@ Provide the code or commands needed. Be concise and practical."""
 
     try:
         response = await llm_client.chat(
-            messages=[Message(role="user", content=execution_prompt)],
+            messages=[HumanMessage(content=execution_prompt)],
             model=state.model,
             temperature=0.5,
         )
 
-        result_message = Message(
-            role="assistant",
+        result_message = AIMessage(
             content=f"[Task {task_id}] {response.content}",
         )
 
@@ -192,7 +192,7 @@ Should we continue with more tasks? Reply YES or NO and briefly explain."""
 
     try:
         response = await llm_client.chat(
-            messages=[Message(role="user", content=reflection_prompt)],
+            messages=[HumanMessage(content=reflection_prompt)],
             model=state.model,
             temperature=0.3,
         )

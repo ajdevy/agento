@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from langchain_core.messages import HumanMessage
+
 from agento.config import settings
 from agento.core.graph import create_agent_graph
-from agento.core.state import AgentState, Message
+from agento.core.state import AgentState
 from agento.infrastructure.llm.openrouter import OpenRouterClient
 from agento.infrastructure.llm.router import ModelRouter
 
@@ -60,7 +62,7 @@ class Agent:
         state = AgentState(
             session_id=self._session_id,
             model=self.model,
-            messages=[Message(role="user", content=message)],
+            messages=[HumanMessage(content=message)],
         )
 
         try:
@@ -83,7 +85,7 @@ class Agent:
         state = AgentState(
             session_id=self._session_id,
             model=self.model,
-            messages=[Message(role="user", content=message)],
+            messages=[HumanMessage(content=message)],
         )
 
         async for event in self.graph.astream_events(state, version="v2"):

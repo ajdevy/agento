@@ -61,7 +61,9 @@ def router_node(state: AgentState) -> dict[str, Any]:
         return {"current_mode": "idle"}
 
     last_message = state.messages[-1]
-    return {"current_mode": last_message.role}
+    # langchain messages have 'type' attribute (human/ai/system)
+    role = getattr(last_message, "type", "user")
+    return {"current_mode": role}
 
 
 def chat_node(state: AgentState) -> dict[str, Any]:

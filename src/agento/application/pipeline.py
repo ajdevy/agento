@@ -6,9 +6,11 @@ from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from typing import Any
 
+from langchain_core.messages import HumanMessage
+
 from agento.config import settings
 from agento.core.graph import create_agent_graph
-from agento.core.state import AgentState, Message
+from agento.core.state import AgentState
 from agento.infrastructure.llm.openrouter import OpenRouterClient
 from agento.infrastructure.llm.router import ModelRouter
 from agento.ui.console import Console
@@ -97,7 +99,7 @@ class Pipeline:
         state = AgentState(
             session_id="default",
             model=self.config.model,
-            messages=[Message(role="user", content=message)],
+            messages=[HumanMessage(content=message)],
         )
 
         try:
@@ -120,7 +122,7 @@ class Pipeline:
         state = AgentState(
             session_id="default",
             model=self.config.model,
-            messages=[Message(role="user", content=message)],
+            messages=[HumanMessage(content=message)],
         )
 
         result = await self.graph.ainvoke(state)
@@ -135,7 +137,7 @@ class Pipeline:
         state = AgentState(  # pragma: no cover
             session_id="default",  # pragma: no cover
             model=self.config.model,  # pragma: no cover
-            messages=[Message(role="user", content=message)],  # pragma: no cover
+            messages=[HumanMessage(content=message)],  # pragma: no cover
         )  # pragma: no cover
 
         async for event in self.graph.astream_events(

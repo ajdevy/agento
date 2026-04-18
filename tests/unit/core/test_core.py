@@ -1,8 +1,9 @@
 """Tests for core state and graph."""
 
+from langchain_core.messages import HumanMessage
 
 from agento.core.graph import create_agent_graph
-from agento.core.state import AgentState, Message
+from agento.core.state import AgentState
 
 
 class TestAgentState:
@@ -21,7 +22,7 @@ class TestAgentState:
         state = AgentState(session_id="test")
 
         # Messages are added via the graph machinery
-        state.messages.append(Message(role="user", content="Hello"))
+        state.messages.append(HumanMessage(content="Hello"))
 
         assert len(state.messages) == 1
         assert state.messages[0].content == "Hello"

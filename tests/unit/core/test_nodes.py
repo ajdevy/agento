@@ -11,11 +11,13 @@ class TestChatNode:
     @pytest.mark.asyncio
     async def test_chat_node_success(self):
         """Test chat node with successful response."""
+        from langchain_core.messages import HumanMessage
+
         from agento.core.nodes import chat_node_fn
-        from agento.core.state import AgentState, Message
+        from agento.core.state import AgentState
 
         state = AgentState(
-            messages=[Message(role="user", content="Hello")],
+            messages=[HumanMessage(content="Hello")],
             model="openrouter/free",
         )
 
@@ -35,11 +37,13 @@ class TestChatNode:
     @pytest.mark.asyncio
     async def test_chat_node_error(self):
         """Test chat node with error."""
+        from langchain_core.messages import HumanMessage
+
         from agento.core.nodes import chat_node_fn
-        from agento.core.state import AgentState, Message
+        from agento.core.state import AgentState
 
         state = AgentState(
-            messages=[Message(role="user", content="Hello")],
+            messages=[HumanMessage(content="Hello")],
             model="openrouter/free",
             error_count=0,
         )
@@ -74,11 +78,13 @@ class TestPlannerNode:
     @pytest.mark.asyncio
     async def test_planner_node_with_plan(self):
         """Test planner node generates plan."""
+        from langchain_core.messages import HumanMessage
+
         from agento.core.nodes import planner_node_fn
-        from agento.core.state import AgentState, Message
+        from agento.core.state import AgentState
 
         state = AgentState(
-            messages=[Message(role="user", content="Create a web app")],
+            messages=[HumanMessage(content="Create a web app")],
         )
 
         mock_client = AsyncMock()

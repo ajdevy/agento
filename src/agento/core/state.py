@@ -4,16 +4,11 @@ from __future__ import annotations
 
 from typing import Annotated, Any, Literal
 
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
 
-
-class Message(BaseModel):
-    """Chat message."""
-
-    role: Literal["user", "assistant", "system", "tool"]
-    content: str
-    name: str | None = None
+Message = HumanMessage | AIMessage | SystemMessage
 
 
 class AgentState(BaseModel):
