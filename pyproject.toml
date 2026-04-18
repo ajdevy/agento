@@ -80,7 +80,6 @@ colab = [
 ]
 
 [project.scripts]
-agent = "agento.main:main"
 agento = "agento.main:main"
 
 [project.urls]
