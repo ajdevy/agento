@@ -83,6 +83,8 @@ setup_venv() {
 
     info "Upgrading pip..."
     pip install --upgrade pip > /dev/null 2>&1
+
+    success "venv ready at .venv/"
 }
 
 # Install dependencies
