@@ -49,6 +49,7 @@ class TestMain:
     def test_run_tui_exits_without_api_key(self):
         """Test run_tui exits when no API key."""
         import asyncio
+
         from agento.main import run_tui
 
         with patch("agento.main.check_api_key", return_value=None):

@@ -115,8 +115,8 @@ class TestConversationStore:
 
     def test_get_active_conversations(self, store):
         """Test getting active conversations."""
-        active1 = store.create_conversation("Active 1")
-        active2 = store.create_conversation("Active 2")
+        store.create_conversation("Active 1")
+        store.create_conversation("Active 2")
         archived = store.create_conversation("Archived")
         store.archive_conversation(archived.id)
 

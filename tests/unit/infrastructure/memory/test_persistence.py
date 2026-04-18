@@ -147,6 +147,6 @@ class TestStorageDirectoryCreation:
     def test_creates_directory(self, temp_dir):
         """Test that directory is created if not exists."""
         new_dir = temp_dir / "new" / "nested" / "dir"
-        persistence = MemoryPersistence(storage_dir=new_dir)
+        MemoryPersistence(storage_dir=new_dir)
 
         assert new_dir.exists()
