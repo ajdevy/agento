@@ -29,7 +29,8 @@ dev:
 	@.venv/bin/pip install -e ".[dev]"
 	@echo ""
 	@echo "✓ Dev environment ready!"
-	@echo "Run '.venv/bin/activate' to activate, then 'agento' to start"
+	@echo "Run '.venv/bin/activate' to activate"
+	@echo "Then run: agento"
 
 # Run tests
 test:
