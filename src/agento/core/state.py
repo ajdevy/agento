@@ -25,16 +25,11 @@ class AgentState(BaseModel):
     )
 
     current_mode: Literal[
-        "idle",
         "chat",
         "code",
-        "devops",
-        "memory",
-        "planning",
-        "multi",
-        "spec",
+        "plan",
     ] = Field(
-        default="idle",
+        default="chat",
         description="Current agent mode",
     )
 

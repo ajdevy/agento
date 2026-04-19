@@ -58,12 +58,9 @@ def create_agent_graph() -> StateGraph:  # type: ignore[type-arg]
 def router_node(state: AgentState) -> dict[str, Any]:
     """Route to appropriate handler based on mode."""
     if not state.messages:
-        return {"current_mode": "idle"}
+        return {"current_mode": state.current_mode}
 
-    last_message = state.messages[-1]
-    # langchain messages have 'type' attribute (human/ai/system)
-    role = getattr(last_message, "type", "user")
-    return {"current_mode": role}
+    return {"current_mode": state.current_mode}
 
 
 def chat_node(state: AgentState) -> dict[str, Any]:

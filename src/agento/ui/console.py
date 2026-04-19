@@ -80,9 +80,10 @@ class Console:
         cost_str = f"${estimated_cost:.4f}" if estimated_cost > 0 else "FREE"
         self._console.print(f"[dim]Estimated cost: {cost_str}[/dim]")
 
-    def input(self, prompt: str = "> ") -> str:
+    def input(self, prompt: str = "> ", mode: str = "chat") -> str:
         """Get input from user."""
-        return self._console.input(prompt)
+        mode_prompt = f"[yellow]{mode}[/yellow]> "
+        return self._console.input(mode_prompt)
 
     def clear(self) -> None:
         """Clear the console."""

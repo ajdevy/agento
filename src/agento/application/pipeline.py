@@ -61,9 +61,11 @@ class Pipeline:
         """Run the interactive pipeline."""
         await self.initialize()  # pragma: no cover
 
+        mode = "chat"
+
         while self._running:
             try:
-                user_input = self.console.input()
+                user_input = self.console.input(mode=mode)
 
                 if not user_input.strip():
                     continue
@@ -77,7 +79,20 @@ class Pipeline:
                     self._show_help()
                     continue
 
-                await self._process_message(user_input)
+                # Handle mode switching
+                if user_input.startswith("/mode "):
+                    new_mode = user_input.split()[1].lower()
+                    if new_mode in ("chat", "code", "plan"):
+                        mode = new_mode
+                        self.console.print_success(f"Switched to {mode} mode")
+                        continue
+                    else:
+                        self.console.print_error(
+                            f"Unknown mode: {new_mode}. Use chat, code, or plan"
+                        )
+                        continue
+
+                await self._process_message(user_input, mode=mode)
 
             except KeyboardInterrupt:
                 self._running = False
@@ -86,7 +101,9 @@ class Pipeline:
             except Exception as e:
                 self.console.print_error(f"Error: {e!s}")
 
-    async def _process_message(self, message: str) -> None:  # pragma: no cover
+    async def _process_message(
+        self, message: str, mode: str = "chat"
+    ) -> None:  # pragma: no cover
         """Process a user message."""  # pragma: no cover
         self.console.print_info("Thinking...")
 
@@ -99,6 +116,7 @@ class Pipeline:
         state = AgentState(
             session_id="default",
             model=self.config.model,
+            current_mode=mode,
             messages=[HumanMessage(content=message)],
         )
 

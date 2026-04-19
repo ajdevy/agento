@@ -7,36 +7,36 @@ class TestRouterNode:
     """Tests for router_node function."""
 
     def test_router_with_empty_messages(self):
-        """Test router returns idle for empty messages."""
+        """Test router returns current_mode for empty messages."""
         from agento.core.graph import router_node
         from agento.core.state import AgentState
 
-        state = AgentState()
+        state = AgentState(current_mode="chat")
         result = router_node(state)
 
-        assert result["current_mode"] == "idle"
+        assert result["current_mode"] == "chat"
 
     def test_router_with_user_message(self):
-        """Test router with user message."""
+        """Test router with user message returns current_mode."""
         from agento.core.graph import router_node
         from agento.core.state import AgentState
 
-        state = AgentState()
+        state = AgentState(current_mode="code")
         state.messages.append(HumanMessage(content="Hello"))
 
         result = router_node(state)
-        assert result["current_mode"] == "human"
+        assert result["current_mode"] == "code"
 
     def test_router_with_assistant_message(self):
-        """Test router with assistant message."""
+        """Test router with assistant message returns current_mode."""
         from agento.core.graph import router_node
         from agento.core.state import AgentState
 
-        state = AgentState()
+        state = AgentState(current_mode="plan")
         state.messages.append(AIMessage(content="Hi"))
 
         result = router_node(state)
-        assert result["current_mode"] == "ai"
+        assert result["current_mode"] == "plan"
 
 
 class TestChatNode:

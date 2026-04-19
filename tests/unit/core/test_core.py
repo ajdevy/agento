@@ -15,7 +15,7 @@ class TestAgentState:
 
         assert state.session_id == "test-session"
         assert state.messages == []
-        assert state.current_mode == "idle"
+        assert state.current_mode == "chat"
 
     def test_add_message(self):
         """Test adding messages."""

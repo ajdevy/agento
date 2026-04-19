@@ -28,17 +28,40 @@ async def run_tui(model: str | None = None) -> None:
     if not api_key:
         console.print_error("No API key configured!")
         console.print("")
-        console.print("Please set one of the following environment variables:")
-        console.print(
-            "  • OPENROUTER_API_KEY (recommended - get free key at openrouter.ai)"
-        )
-        console.print("  • DEEPSEEK_API_KEY")
-        console.print("  • GOOGLE_API_KEY")
+        console.print("Choose a provider:")
+        console.print("  1. OpenRouter (recommended - free models at openrouter.ai)")
+        console.print("  2. DeepSeek")
+        console.print("  3. Google AI (Gemini)")
         console.print("")
-        console.print("Create a .env file or export the API key.")
-        console.print("")
-        console.print_help_hint()
-        sys.exit(1)
+        choice = console._console.input("Enter provider (1/2/3): ").strip()
+
+        if choice == "1":
+            console.print("Get your free API key from https://openrouter.ai/keys")
+            key_input = console._console.input("Enter OPENROUTER_API_KEY: ").strip()
+            if key_input:
+                api_key = key_input
+            else:
+                console.print_error("No API key provided. Exiting.")
+                sys.exit(1)
+        elif choice == "2":
+            console.print("Get API key from https://platform.deepseek.com/")
+            key_input = console._console.input("Enter DEEPSEEK_API_KEY: ").strip()
+            if key_input:
+                api_key = key_input
+            else:
+                console.print_error("No API key provided. Exiting.")
+                sys.exit(1)
+        elif choice == "3":
+            console.print("Get API key from https://aistudio.google.com/")
+            key_input = console._console.input("Enter GOOGLE_API_KEY: ").strip()
+            if key_input:
+                api_key = key_input
+            else:
+                console.print_error("No API key provided. Exiting.")
+                sys.exit(1)
+        else:
+            console.print_error("Invalid choice. Exiting.")
+            sys.exit(1)
 
     config = PipelineConfig(model=model or settings.default_model)
 
