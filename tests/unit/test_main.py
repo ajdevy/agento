@@ -2,8 +2,6 @@
 
 from unittest.mock import patch
 
-import pytest
-
 
 class TestMain:
     """Tests for main module."""
@@ -45,17 +43,6 @@ class TestMain:
 
             result = check_api_key()
             assert result is None
-
-    def test_run_tui_exits_without_api_key(self):
-        """Test run_tui exits with SystemExit when no API key and no input."""
-        import asyncio
-        from unittest.mock import patch
-
-        from agento.main import run_tui
-
-        # This test needs stdin mocking which is complex - skip for now
-        # The actual flow now prompts for API key interactively
-        pass
 
     def test_main_function_exists(self):
         """Test main function can be imported."""
