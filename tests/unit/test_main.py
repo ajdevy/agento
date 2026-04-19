@@ -1,6 +1,10 @@
 """Tests for main module."""
 
+import asyncio
+from io import StringIO
 from unittest.mock import patch
+
+from agento.main import main, run_tui
 
 
 class TestMain:
@@ -44,9 +48,16 @@ class TestMain:
             result = check_api_key()
             assert result is None
 
+    def test_run_tui_with_missing_api_key(self):
+        """Test run_tui exits when no API key and no input."""
+        with patch("agento.main.check_api_key", return_value=None):
+            with patch("sys.stdin", StringIO("q\n")):
+                try:
+                    asyncio.run(run_tui())
+                except SystemExit as e:
+                    assert e.code == 1
+
     def test_main_function_exists(self):
         """Test main function can be imported."""
-        from agento.main import main
-
         assert main is not None
         assert callable(main)
