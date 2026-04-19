@@ -1,6 +1,5 @@
 """Tests for router module."""
 
-
 import pytest
 
 

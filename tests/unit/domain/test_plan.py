@@ -1,6 +1,5 @@
 """Tests for Plan entity."""
 
-
 from agento.domain.entities.plan import Plan
 from agento.domain.entities.task import Task
 

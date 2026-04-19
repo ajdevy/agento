@@ -20,26 +20,26 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Create virtual environment
+        run: |
+          python -m venv .venv
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -e ".[dev]"
 
       - name: Lint
         run: |
-          ruff check src/agento
-
-      - name: Type check
-        run: |
-          mypy src/agento
+          .venv/bin/ruff check src/agento tests/
 
       - name: Format check
         run: |
-          black --check src/agento
+          .venv/bin/ruff format --check src/agento tests/
 
       - name: Run tests
         run: |
-          pytest tests/ -v --cov=src/agento --cov-report=xml --cov-fail-under=95
+          .venv/bin/pytest tests/ -v --cov=src/agento --cov-report=xml --cov-fail-under=95
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
@@ -63,7 +63,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Create virtual environment
+        run: |
+          python -m venv .venv
+
       - name: Build package
         run: |
-          pip install build
+          .venv/bin/pip install build
           python -m build

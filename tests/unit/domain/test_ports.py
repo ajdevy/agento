@@ -1,6 +1,5 @@
 """Tests for domain ports."""
 
-
 import pytest
 
 
